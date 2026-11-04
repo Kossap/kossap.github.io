@@ -190,8 +190,10 @@
     .hero { min-height: 100vh; }
     .hero-single { width: min(100%, 380px, calc(100vh - 380px)); }
     .hero-me img { height: min(calc(100vh - 200px), 680px); }
-    /* Le nom KOSSAP est aligné sur la rangée Spotify / Apple Music / Deezer. */
+    /* Le nom KOSSAP est sur la même ligne que le titre du single (PAPILLONS) :
+       la photo et le nom remontent ensemble, la carte de droite ne bouge pas. */
     .hero { align-content: center; align-items: end; }
+    .hero-me { margin-top: -94px; margin-bottom: 94px; }
     .hero-me .hero-text { margin-top: -34px; }
   }
   /* Échelle typographique resserrée, façon Solar Grey (04/11/2026). */
@@ -201,7 +203,10 @@
   header nav a { font-size: 10px; }
   .wordmark { font-size: 18px; letter-spacing: .32em; padding-left: .32em; }
   .block-head h2 { font-size: 11px; letter-spacing: .26em; }
-  .hero-single h3 { font-size: 18px; line-height: 18px; }
+  /* Carte « Nouveau single » : titre réduit, façon fiche produit Solar Grey, et une seule taille (9 px, celle des boutons) pour tout ce qui l'entoure. */
+  .hero-single h3 { font-size: 13px; line-height: 13px; }
+  .hero-single .block-head h2, .hero-single .label, .hero-single .cta, .hero-single .pf { font-size: 9px; }
+  .hero-single .arrow { font-size: 11px; }
   .cta { font-size: 10px; }
   .pf { font-size: 9px; }
   .release h3, .clip h3 { font-size: 10.5px; }
@@ -210,7 +215,7 @@
   @media (min-width: 1024px) {
     .wordmark { font-size: 22px; }
     .hero-text { margin-top: -40px; }
-    .hero-single h3 { font-size: 24px; line-height: 24px; }
+    .hero-single h3 { font-size: 16px; line-height: 16px; }
     .block-head h2 { font-size: 11px; }
     .release h3, .clip h3 { font-size: 10.5px; }
     .links .name { font-size: 12px; }
