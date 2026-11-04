@@ -340,20 +340,23 @@
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return land();
     const steps = [["img/visage.jpg", "VISAGE", "2025"], ["img/perdrelenord.jpg", "PERDRE LE NORD", "2025"], ["img/jenveuxdautres.jpg", "J’EN VEUX D’AUTRES", "2025"], ["img/jaiprisletemps.jpg", "J’AI PRIS LE TEMPS", "2026"], ["img/papillons.jpg", "PAPILLONS", "2026"]];
     const finalAlt = img.alt;
-    // Les titres longs (J'en veux d'autres, J'ai pris le temps) rapetissent pour tenir dans la carte.
-    const fit = () => {
+    // Une seule taille pour tous les titres, celle qui fait tenir le plus long (J'en veux d'autres).
+    const harmonize = () => {
       title.style.fontSize = "";
-      const room = title.clientWidth, need = title.scrollWidth;
-      if (need > room) title.style.fontSize = Math.max(11, Math.floor(parseFloat(getComputedStyle(title).fontSize) * room / need)) + "px";
+      const base = parseFloat(getComputedStyle(title).fontSize);
+      let ratio = 1;
+      steps.forEach(([, name]) => { title.textContent = name; ratio = Math.min(ratio, title.clientWidth / title.scrollWidth); });
+      title.style.fontSize = Math.max(11, Math.floor(base * ratio)) + "px";
     };
     let started = false;
     const run = () => {
       if (started) return;
       started = true;
+      harmonize();
       let k = 0;
       const next = () => {
         const [src, name, y] = steps[k];
-        img.src = src; title.textContent = name; year.textContent = y; fit();
+        img.src = src; title.textContent = name; year.textContent = y;
         img.alt = k === steps.length - 1 ? finalAlt : "Pochette de " + name;
         if (k === 0) card.classList.add("go");
         if (++k < steps.length) setTimeout(next, k === steps.length - 1 ? 320 : 190);
@@ -362,8 +365,9 @@
     };
     // On attend que les 5 pochettes soient chargées (au plus 1,2 s), pour un défilé sans trou.
     let loaded = 0;
-    steps.forEach(([src]) => { const i = new Image(); i.onload = i.onerror = () => { if (++loaded === steps.length) setTimeout(run, 200); }; i.src = src; });
-    setTimeout(run, 1200);
+    const fonts = document.fonts ? document.fonts.ready : Promise.resolve();
+    steps.forEach(([src]) => { const i = new Image(); i.onload = i.onerror = () => { if (++loaded === steps.length) fonts.then(() => setTimeout(run, 200)); }; i.src = src; });
+    setTimeout(() => fonts.then(run), 1200);
   })();
 </script>
 </body>
