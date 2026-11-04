@@ -212,6 +212,11 @@
     .release h3, .clip h3 { font-size: 10.5px; }
     .links .name { font-size: 12px; }
   }
+  /* Téléphone et fenêtres étroites : à l'ouverture, le titre « Sorties » tombe aussi en bas de l'écran. */
+  @media (max-width: 1023px) {
+    .hero { min-height: calc(100svh - 82px); align-content: start; }
+    .hero-me img { width: auto; height: min(calc(100svh - 370px), 430px, calc(min(78vw, 360px) * 1.19)); }
+  }
 </style>
 </head>
 <body>
