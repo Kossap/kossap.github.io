@@ -160,7 +160,7 @@
     .hero-text { margin-top: -52px; }
     .hero-me img { width: auto; }
     .hero-single { width: min(100%, 380px); padding-top: 0; }
-    .hero-single a { grid-template-columns: 1fr; gap: 16px; }
+    .hero-single a { grid-template-columns: minmax(0, 1fr); gap: 16px; }
     .hero-single a figure { grid-row: auto; }
     .hero-single h3 { font-size: 32px; }
     :root { --pad: 48px; }
@@ -180,6 +180,11 @@
     .links a { padding: 16px 0; }
     .links .name { font-size: 13px; }
     .links .arrow { font-size: 16px; }
+
+    /* À l'ouverture, le titre « Sorties » tombe en bas de l'écran et les pochettes restent juste en dessous. */
+    .hero { min-height: calc(100vh - 96px); }
+    .hero-single { width: min(100%, 380px, calc(100vh - 425px)); }
+    .hero-me img { height: min(calc(100vh - 250px), 680px); }
   }
 </style>
 </head>
