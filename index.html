@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
+<script>document.documentElement.classList.add("js");</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kossap — OH NO ! ⚡️</title>
@@ -67,7 +68,7 @@
   .hero-single figure { overflow: hidden; background: var(--card); aspect-ratio: 1; }
   .hero-single img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s cubic-bezier(.2,.7,.2,1); }
   .hero-single a:hover img { transform: scale(1.04); }
-  .hero-single h3 { font-family: var(--display); font-weight: 500; font-size: 24px; line-height: 1; letter-spacing: .04em; align-self: end; }
+  .hero-single h3 { font-family: var(--display); font-weight: 500; font-size: 24px; line-height: 1; letter-spacing: .04em; align-self: end; white-space: nowrap; overflow: hidden; }
   .hero-single .row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 10px; align-self: start; }
   .platforms { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 18px; }
   .pf { display: grid; place-items: center; min-height: 46px; padding: 8px 4px; border: 1px solid var(--line); text-align: center; font-family: var(--display); font-size: 9.5px; letter-spacing: .1em; line-height: 1.3; text-transform: uppercase; transition: background .3s ease, color .3s ease; }
@@ -129,7 +130,11 @@
   .d1 { animation-delay: .3s; } .d2 { animation-delay: .5s; }
   @keyframes rise { to { opacity: 1; transform: none; } }
   @keyframes settle { to { transform: scale(1); opacity: 1; } }
-  @media (prefers-reduced-motion: reduce) { .rise { opacity: 1; transform: none; animation: none; } .hero-me img { animation: none; transform: none; opacity: 1; } * { transition: none !important; } }
+  /* Arrivée : la carte de droite fait défiler les singles jusqu'au dernier. */
+  .js .hero-single:not(.go) { opacity: 0; }
+  .hero-single.go { animation: fade .5s ease both; }
+  @keyframes fade { from { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .rise { opacity: 1; transform: none; animation: none; } .hero-me img { animation: none; transform: none; opacity: 1; } .js .hero-single:not(.go) { opacity: 1; } * { transition: none !important; } }
 
   @media (min-width: 760px) {
     .single a { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end; }
@@ -208,7 +213,7 @@
       </div>
     </div>
 
-    <div class="hero-single rise d2" id="musique">
+    <div class="hero-single" id="musique">
       <div class="block-head"><h2>NOUVEAU SINGLE</h2><span class="label">2026</span></div>
       <a href="https://open.spotify.com/album/5hCjuoBYLj4SVuyP85bu4n">
         <figure><img src="img/papillons.jpg" alt="Pochette du single Papillons : un papillon doré sur fond clair" width="640" height="640"></figure>
@@ -303,5 +308,36 @@
   })();
 </script>
 
+<script>
+  // Arrivée : la carte de droite fait défiler les singles du plus ancien au plus récent, puis s'arrête sur le dernier.
+  (() => {
+    const card = document.querySelector(".hero-single");
+    const img = card.querySelector("figure img");
+    const title = card.querySelector("h3");
+    const year = card.querySelector(".block-head .label");
+    const land = () => card.classList.add("go");
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return land();
+    const steps = [["img/visage.jpg", "VISAGE", "2025"], ["img/perdrelenord.jpg", "PERDRE LE NORD", "2025"], ["img/jenveuxdautres.jpg", "J’EN VEUX D’AUTRES", "2025"], ["img/jaiprisletemps.jpg", "J’AI PRIS LE TEMPS", "2026"], ["img/papillons.jpg", "PAPILLONS", "2026"]];
+    const finalAlt = img.alt;
+    let started = false;
+    const run = () => {
+      if (started) return;
+      started = true;
+      let k = 0;
+      const next = () => {
+        const [src, name, y] = steps[k];
+        img.src = src; title.textContent = name; year.textContent = y;
+        img.alt = k === steps.length - 1 ? finalAlt : "Pochette de " + name;
+        if (k === 0) card.classList.add("go");
+        if (++k < steps.length) setTimeout(next, k === steps.length - 1 ? 320 : 190);
+      };
+      next();
+    };
+    // On attend que les 5 pochettes soient chargées (au plus 1,2 s), pour un défilé sans trou.
+    let loaded = 0;
+    steps.forEach(([src]) => { const i = new Image(); i.onload = i.onerror = () => { if (++loaded === steps.length) setTimeout(run, 200); }; i.src = src; });
+    setTimeout(run, 1200);
+  })();
+</script>
 </body>
 </html>
