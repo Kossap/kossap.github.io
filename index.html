@@ -68,7 +68,7 @@
   .hero-single figure { overflow: hidden; background: var(--card); aspect-ratio: 1; }
   .hero-single img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s cubic-bezier(.2,.7,.2,1); }
   .hero-single a:hover img { transform: scale(1.04); }
-  .hero-single h3 { font-family: var(--display); font-weight: 500; font-size: 24px; line-height: 1; letter-spacing: .04em; align-self: end; white-space: nowrap; overflow: hidden; }
+  .hero-single h3 { font-family: var(--display); font-weight: 500; font-size: 24px; line-height: 24px; letter-spacing: .04em; align-self: end; white-space: nowrap; overflow: hidden; }
   .hero-single .row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 10px; align-self: start; }
   .platforms { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 18px; }
   .pf { display: grid; place-items: center; min-height: 46px; padding: 8px 4px; border: 1px solid var(--line); text-align: center; font-family: var(--display); font-size: 9.5px; letter-spacing: .1em; line-height: 1.3; text-transform: uppercase; transition: background .3s ease, color .3s ease; }
@@ -167,7 +167,7 @@
     .hero-single { width: min(100%, 380px); padding-top: 0; }
     .hero-single a { grid-template-columns: minmax(0, 1fr); gap: 16px; }
     .hero-single a figure { grid-row: auto; }
-    .hero-single h3 { font-size: 32px; }
+    .hero-single h3 { font-size: 32px; line-height: 32px; }
     :root { --pad: 48px; }
     .releases { grid-auto-flow: row; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-auto-columns: auto; overflow: visible; margin-right: 0; padding-right: 0; gap: 18px; }
     section.block, footer { width: 100%; max-width: 1240px; margin-left: auto; margin-right: auto; }
@@ -319,6 +319,12 @@
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return land();
     const steps = [["img/visage.jpg", "VISAGE", "2025"], ["img/perdrelenord.jpg", "PERDRE LE NORD", "2025"], ["img/jenveuxdautres.jpg", "J’EN VEUX D’AUTRES", "2025"], ["img/jaiprisletemps.jpg", "J’AI PRIS LE TEMPS", "2026"], ["img/papillons.jpg", "PAPILLONS", "2026"]];
     const finalAlt = img.alt;
+    // Les titres longs (J'en veux d'autres, J'ai pris le temps) rapetissent pour tenir dans la carte.
+    const fit = () => {
+      title.style.fontSize = "";
+      const room = title.clientWidth, need = title.scrollWidth;
+      if (need > room) title.style.fontSize = Math.max(11, Math.floor(parseFloat(getComputedStyle(title).fontSize) * room / need)) + "px";
+    };
     let started = false;
     const run = () => {
       if (started) return;
@@ -326,7 +332,7 @@
       let k = 0;
       const next = () => {
         const [src, name, y] = steps[k];
-        img.src = src; title.textContent = name; year.textContent = y;
+        img.src = src; title.textContent = name; year.textContent = y; fit();
         img.alt = k === steps.length - 1 ? finalAlt : "Pochette de " + name;
         if (k === 0) card.classList.add("go");
         if (++k < steps.length) setTimeout(next, k === steps.length - 1 ? 320 : 190);
