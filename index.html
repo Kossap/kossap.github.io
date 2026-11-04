@@ -186,15 +186,15 @@
     .links .name { font-size: 13px; }
     .links .arrow { font-size: 16px; }
 
-    /* À l'ouverture, le titre « Sorties » tombe en bas de l'écran et les pochettes restent juste en dessous. */
-    .hero { min-height: calc(100vh - 96px); }
-    .hero-single { width: min(100%, 380px, calc(100vh - 425px)); }
-    .hero-me img { height: min(calc(100vh - 250px), 680px); }
+    /* À l'ouverture, on ne voit que l'entrée : la barre « Sorties » n'apparaît qu'en faisant défiler. */
+    .hero { min-height: 100vh; }
+    .hero-single { width: min(100%, 380px, calc(100vh - 380px)); }
+    .hero-me img { height: min(calc(100vh - 200px), 680px); }
   }
   /* Échelle typographique resserrée, façon Solar Grey (04/11/2026). */
   body { font-size: 14px; }
   .label { font-size: 9.5px; }
-  .mark { font-size: 12px; }
+  .mark { font-size: 10px; letter-spacing: .24em; }
   header nav a { font-size: 10px; }
   .wordmark { font-size: 28px; }
   .block-head h2 { font-size: 11px; letter-spacing: .26em; }
@@ -212,10 +212,19 @@
     .release h3, .clip h3 { font-size: 10.5px; }
     .links .name { font-size: 12px; }
   }
-  /* Téléphone et fenêtres étroites : à l'ouverture, le titre « Sorties » tombe aussi en bas de l'écran. */
+  /* Téléphone et fenêtres étroites : l'entrée prend tout l'écran, la barre « Sorties » n'apparaît qu'en faisant défiler. */
   @media (max-width: 1023px) {
-    .hero { min-height: calc(100svh - 82px); align-content: start; }
-    .hero-me img { width: auto; height: min(calc(100svh - 370px), 430px, calc(min(78vw, 360px) * 1.19)); }
+    .hero { min-height: 100svh; align-content: center; }
+    .hero-me img { width: auto; height: min(calc(100svh - 340px), 430px, calc(min(78vw, 360px) * 1.19)); }
+  }
+  /* Écrans tactiles : aucun effet de survol, les liens restent fixes quand on les touche. */
+  @media (hover: none) {
+    .links a:hover { padding-left: 0; }
+    a:hover .arrow { transform: none; }
+    .hero-single a:hover img, .single a:hover img, .clip a:hover img { transform: none; }
+    .release a:hover img { transform: none; filter: grayscale(.25); }
+    .pf:hover { background: transparent; color: inherit; }
+    header nav a:hover { color: inherit; }
   }
 </style>
 </head>
