@@ -52,16 +52,16 @@
   /* Hero */
   /* Entrée : Kossap à gauche, dernier single à droite (empilés sur mobile).
      La photo a le même noir que la page : elle se fond dans le fond, sans cadre. */
-  .hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 64px var(--pad) 0; overflow: hidden; }
+  .hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 56px var(--pad) 0; overflow: hidden; }
   .hero-me { display: grid; justify-items: center; }
-  .hero-me img { width: min(78%, 360px); height: auto; aspect-ratio: 1260 / 1500; object-fit: cover;
+  .hero-me img { margin-top: -16px; width: min(78%, 360px); height: auto; aspect-ratio: 1260 / 1500; object-fit: cover;
     -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent 96%); mask-image: linear-gradient(180deg, #000 62%, transparent 96%);
     opacity: 0; transform: scale(1.03); animation: settle 2.4s cubic-bezier(.2,.7,.2,1) forwards; }
   .hero-text { position: relative; z-index: 2; display: grid; justify-items: center; gap: 10px; margin-top: clamp(-96px, -18vw, -56px); text-align: center; }
   .wordmark { font-family: var(--display); font-weight: 500; font-size: clamp(34px, 10vw, 56px); line-height: 1; letter-spacing: .06em; }
   .ohno { font-family: var(--display); font-weight: 300; font-size: 13px; letter-spacing: .12em; white-space: nowrap; }
 
-  .hero-single { width: min(100%, 420px); justify-self: center; padding-top: 40px; }
+  .hero-single { width: min(100%, 420px); justify-self: center; padding-top: 24px; }
   .hero-single a { display: grid; grid-template-columns: 96px minmax(0, 1fr); align-items: center; gap: 10px 16px; }
   .hero-single a figure { grid-row: span 2; }
   .hero-single figure { overflow: hidden; background: var(--card); aspect-ratio: 1; }
@@ -160,7 +160,7 @@
   /* Ordinateur : échelle resserrée, façon Solar Grey */
   @media (min-width: 1024px) {
     .hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 48px; max-width: 1240px; min-height: 100vh; margin: 0 auto; padding: 72px 48px 40px; }
-    .hero-me img { width: auto; height: min(calc(100vh - 230px), 680px); }
+    .hero-me img { margin-top: 0; width: auto; height: min(calc(100vh - 230px), 680px); }
     .hero-text { margin-top: -88px; }
     .hero-me img { width: auto; }
     .hero-single { width: min(100%, 380px); padding-top: 0; }
