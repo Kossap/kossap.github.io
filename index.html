@@ -231,7 +231,7 @@
      rien n'apparaît sous l'entrée à l'arrivée, même derrière la barre transparente de Safari. */
   @media (max-width: 1023px) {
     :root { --pad: max(clamp(16px, 4vw, 48px), env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)); }
-    .hero { display: flex; flex-direction: column; min-height: 100vh; min-height: 100svh; padding-bottom: 24px; }
+    .hero { display: flex; flex-direction: column; min-height: 100vh; min-height: var(--screen-h, 100svh); padding-bottom: 24px; }
     .hero-me { position: relative; flex: 1 1 0; min-height: 220px; display: flex; flex-direction: column; justify-content: flex-end; margin: 0 calc(var(--pad) * -1); }
     .hero-me img { position: absolute; left: 0; right: 0; bottom: 0; margin: 0 auto; width: auto; height: auto; max-width: 100%; max-height: 100%; }
     .hero-text { margin-top: 0; padding-bottom: 21px; }
@@ -243,7 +243,7 @@
   /* Téléphone à l'horizontale : photo à gauche, single à droite, comme sur ordi. */
   @media (max-width: 1023px) and (orientation: landscape) and (max-height: 540px) {
     .hero { flex-direction: row; align-items: stretch; justify-content: center; gap: clamp(24px, 6vw, 64px); padding-bottom: 16px; }
-    .hero-me { flex: none; width: calc((100vh - 72px) * .84); width: calc((100svh - 72px) * .84); min-height: 0; margin: 0; }
+    .hero-me { flex: none; width: calc((100vh - 72px) * .84); width: calc((var(--screen-h, 100svh) - 72px) * .84); min-height: 0; margin: 0; }
     .hero-single { align-self: center; width: min(46vw, 380px); padding-top: 0; }
   }
   /* Écrans tactiles : aucun effet de survol, les liens restent fixes quand on les touche. */
@@ -258,6 +258,37 @@
 </style>
 </head>
 <body>
+<script>
+  // Téléphone (15/11/2026) : la hauteur de l'entrée est figée en pixels au premier toucher. La barre du navigateur
+  // se replie alors (Safari, Instagram, TikTok…) et l'écran s'agrandit : sans ce gel, la photo grossissait.
+  // La hauteur est lue sur un repère de 100svh, donc exactement celle déjà affichée. On ne recalcule qu'en tournant le téléphone.
+  (() => {
+    const root = document.documentElement;
+    const probe = document.createElement("div");
+    probe.setAttribute("aria-hidden", "true");
+    probe.style.cssText = "position:fixed;top:0;left:0;width:0;height:100vh;height:100svh;visibility:hidden;pointer-events:none";
+    document.body.appendChild(probe);
+    let width = root.clientWidth, frozen = false;
+    const freeze = () => {
+      if (frozen) return;
+      frozen = true;
+      root.style.setProperty("--screen-h", probe.offsetHeight + "px");
+    };
+    const arm = () => ["touchstart", "scroll", "wheel"].forEach((type) => addEventListener(type, freeze, { passive: true, once: true }));
+    const unfreeze = () => {
+      width = root.clientWidth;
+      frozen = false;
+      root.style.removeProperty("--screen-h");
+      arm();
+      setTimeout(freeze, 1500);
+    };
+    arm();
+    addEventListener("load", () => setTimeout(freeze, 2500));
+    addEventListener("resize", () => { if (root.clientWidth !== width) unfreeze(); });
+    const portrait = matchMedia("(orientation: portrait)");
+    if (portrait.addEventListener) portrait.addEventListener("change", unfreeze);
+  })();
+</script>
 
 <header>
   <a class="mark" href="#top" aria-label="Kossap, haut de page">OH NO ! ⚡️</a>
