@@ -233,9 +233,10 @@
     :root { --pad: max(clamp(16px, 4vw, 48px), env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)); }
     .hero { display: flex; flex-direction: column; min-height: 100vh; min-height: var(--screen-h, 100svh); padding-top: 0; padding-bottom: 24px; }
     .hero-me { position: relative; flex: 1 1 0; min-height: 276px; display: flex; flex-direction: column; justify-content: flex-end; margin: 0 calc(var(--pad) * -1); }
-    /* Photo plus grande (15/11/2026) : bord à bord sur toute la largeur et jusqu'en haut de l'écran,
-       sous le menu transparent. Recadrée par le bas (zone fondue), la tête reste toujours sous le menu. */
-    .hero-me img { position: absolute; top: 0; right: 0; bottom: 0; left: 0; margin: 0; width: 100%; height: 100%; max-width: none; max-height: none; object-fit: cover; object-position: 50% 0; }
+    /* Photo plus grande (15/11/2026) : elle occupe presque toute la largeur et monte vers le haut de l'écran,
+       sous le menu transparent. Puis « à peine un peu plus petit » : 92 % de la place, ancrée en bas pour que KOSSAP reste
+       sur le bas fondu. Recadrée par le bas (zone fondue), la tête reste toujours sous le menu. */
+    .hero-me img { position: absolute; top: auto; right: 4%; bottom: 0; left: 4%; margin: 0; width: 92%; height: 92%; max-width: none; max-height: none; object-fit: cover; object-position: 50% 0; }
     .hero-text { margin-top: 0; padding-bottom: 21px; }
     .hero-single { flex: none; align-self: center; }
     .hero + section.block { padding-top: 32px; }
@@ -246,6 +247,7 @@
   @media (max-width: 1023px) and (orientation: landscape) and (max-height: 540px) {
     .hero { flex-direction: row; align-items: stretch; justify-content: center; gap: clamp(24px, 6vw, 64px); padding-top: 56px; padding-bottom: 16px; }
     .hero-me { flex: none; width: calc((100vh - 72px) * .84); width: calc((var(--screen-h, 100svh) - 72px) * .84); min-height: 0; margin: 0; }
+    .hero-me img { left: 0; right: 0; width: 100%; height: 100%; }
     .hero-single { align-self: center; width: min(46vw, 380px); padding-top: 0; }
   }
   /* Écrans tactiles : aucun effet de survol, les liens restent fixes quand on les touche. */
