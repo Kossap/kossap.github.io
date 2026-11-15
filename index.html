@@ -59,7 +59,10 @@
   .hero-me { display: grid; justify-items: center; }
   .hero-me img { margin-top: -16px; width: min(78%, 360px); height: auto; aspect-ratio: 1260 / 1500; object-fit: cover;
     -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent 96%); mask-image: linear-gradient(180deg, #000 62%, transparent 96%);
-    opacity: 0; transform: scale(1.03); animation: settle 2.4s cubic-bezier(.2,.7,.2,1) forwards; }
+    opacity: 0; transform: scale(1.03); animation: settle 2.4s cubic-bezier(.2,.7,.2,1) forwards;
+    /* La photo passe sous le grain (z-index -1), comme le fond : son noir se confond avec la page, sans cadre visible (15/11/2026).
+       Les pochettes et les clips restent au-dessus du grain, en couleurs d'origine (10/11/2026). */
+    position: relative; z-index: -2; }
   .hero-text { position: relative; z-index: 2; display: grid; justify-items: center; gap: 10px; margin-top: clamp(-64px, -10vw, -32px); text-align: center; }
   .wordmark { font-family: var(--display); font-weight: 500; font-size: clamp(34px, 10vw, 56px); line-height: 1; letter-spacing: .06em; }
   .ohno { font-family: var(--display); font-weight: 300; font-size: 13px; letter-spacing: .12em; white-space: nowrap; }
@@ -222,10 +225,26 @@
     .release h3, .clip h3 { font-size: 10.5px; }
     .links .name { font-size: 12px; }
   }
-  /* Téléphone et fenêtres étroites : l'entrée prend tout l'écran, la barre « Sorties » n'apparaît qu'en faisant défiler. */
+  /* Téléphone et fenêtres étroites (15/11/2026) : l'entrée remplit exactement l'écran, sans vide sous les boutons.
+     La photo prend toute la hauteur libre (au plus la largeur de l'écran) et les boutons restent en bas de l'écran.
+     « Sorties » suit à 56 px des boutons, mais ne s'affiche qu'au premier défilement :
+     rien n'apparaît sous l'entrée à l'arrivée, même derrière la barre transparente de Safari. */
   @media (max-width: 1023px) {
-    .hero { min-height: 100svh; align-content: center; }
-    .hero-me img { width: auto; height: min(calc(100svh - 340px), 430px, calc(min(78vw, 360px) * 1.19)); }
+    :root { --pad: max(clamp(16px, 4vw, 48px), env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)); }
+    .hero { display: flex; flex-direction: column; min-height: 100vh; min-height: 100svh; padding-bottom: 24px; }
+    .hero-me { position: relative; flex: 1 1 0; min-height: 220px; display: flex; flex-direction: column; justify-content: flex-end; margin: 0 calc(var(--pad) * -1); }
+    .hero-me img { position: absolute; left: 0; right: 0; bottom: 0; margin: 0 auto; width: auto; height: auto; max-width: 100%; max-height: 100%; }
+    .hero-text { margin-top: 0; padding-bottom: 21px; }
+    .hero-single { flex: none; align-self: center; }
+    .hero + section.block { padding-top: 32px; }
+    .js main > section.block { transition: opacity .6s ease; }
+    .js:not(.scrolled) main > section.block { opacity: 0; }
+  }
+  /* Téléphone à l'horizontale : photo à gauche, single à droite, comme sur ordi. */
+  @media (max-width: 1023px) and (orientation: landscape) and (max-height: 540px) {
+    .hero { flex-direction: row; align-items: stretch; justify-content: center; gap: clamp(24px, 6vw, 64px); padding-bottom: 16px; }
+    .hero-me { flex: none; width: calc((100vh - 72px) * .84); width: calc((100svh - 72px) * .84); min-height: 0; margin: 0; }
+    .hero-single { align-self: center; width: min(46vw, 380px); padding-top: 0; }
   }
   /* Écrans tactiles : aucun effet de survol, les liens restent fixes quand on les touche. */
   @media (hover: none) {
@@ -327,6 +346,20 @@
   <iframe title="Lecteur Spotify" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
   <a id="player-open" class="label" href="https://open.spotify.com/artist/0Trl1ageAng6zIZzco3gY9">Ouvrir dans Spotify ↗</a>
 </dialog>
+
+<script>
+  // Téléphone : la suite de la page (Sorties, Clips, Liens) s'affiche au premier défilement, jamais à l'arrivée.
+  (() => {
+    const root = document.documentElement;
+    const reveal = () => {
+      if (scrollY < 2 && location.hash.length < 2) return;
+      root.classList.add("scrolled");
+      removeEventListener("scroll", reveal);
+    };
+    addEventListener("scroll", reveal, { passive: true });
+    reveal();
+  })();
+</script>
 
 <script>
   // Un clic sur un son ouvre le lecteur Spotify intégré (extrait de 30 s sans compte Spotify).
